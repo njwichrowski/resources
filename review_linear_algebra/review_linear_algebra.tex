@@ -1,0 +1,1344 @@
+\documentclass[xcolor=table]{beamer}
+\usetheme{Boadilla}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsfonts}
+%\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{multirow}
+\usepackage{systeme}
+\usepackage{tikz}
+\usepackage{xcolor}
+
+\usetikzlibrary{arrows.meta}
+
+\title[Math Review for Kinetic Processes]{Mathematical Review for\\EN.540.301: Kinetic Processes}
+\author{Noah J. Wichrowski}
+\institute[JHU]{Johns Hopkins University}
+\date{\today}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+
+\newcommand{\conj}[1]{\overline{#1}}
+\newcommand{\ii}{\,\mathbf{i}}
+\newcommand{\Herm}{\mathcal{H}}
+\newcommand{\skHerm}{\mathcal{S}}
+\newcommand{\range}{\mathcal{R}}
+\newcommand{\nulls}{\mathcal{N}}
+\newcommand{\I}{\mathcal{I}}
+\newcommand{\poly}{\mathcal{P}}
+
+\newcommand{\starr}{\ensuremath{^{\text{\textasteriskcentered}}}}
+\newcommand{\mstarr}{\ensuremath{^{-\text{\textasteriskcentered}}}}
+\newcommand{\mppi}{\ensuremath{^\dagger}}
+\newcommand{\vect}[1]{\boldsymbol{#1}}
+\newcommand{\q}{\ensuremath{\vect{\theta}}}
+
+\newcommand{\E}[1]{\mathbb{E}\left[#1\right]}
+\newcommand{\Ef}[1]{\mathbb{E}_f\left[#1\right]}
+\newcommand{\Eg}[1]{\mathbb{E}_g\left[#1\right]}
+\newcommand{\V}[1]{\mathbb{V}\left[#1\right]}
+\newcommand{\iid}{\ensuremath{\stackrel{\text{iid}}{\sim}}}
+\newcommand{\nml}{\mathcal{N}}
+
+\newcommand{\argmaxx}{\mathop{\mathrm{argmax}}\limits}
+\newcommand{\argminn}{\mathop{\mathrm{argmin}}\limits}
+\newcommand{\maximize}{\mathop{\mathrm{maximize}}\limits}
+\newcommand{\supr}{\mathop{\mathrm{sup}}\limits}
+\newcommand{\lrarr}{\ensuremath{\leftrightarrow}}
+
+\newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
+\providecommand{\norm}[1]{\lVert#1\rVert}
+\renewcommand{\arraystretch}{1.25}
+\let\emptyset\varnothing
+\let\eps\varepsilon
+
+\DeclareMathOperator{\argmax}{argmax}
+\DeclareMathOperator{\Argmax}{Argmax}
+\DeclareMathOperator{\dinn}{dim}
+\DeclareMathOperator{\spann}{span}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\rref}{rref}
+\DeclareMathOperator{\rk}{rk}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\real}{Re}
+\DeclareMathOperator{\imag}{Im}
+\DeclareMathOperator{\loge}{ln}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\Cov}{Cov}
+%\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+%\DeclarePairedDelimiter{\flr}{\lfloor}{\rfloor}
+%\DeclareSymbolFont{extraup}{U}{zavm}{m}{n}
+
+%\def\mathrlap{\mathpalette\mathrlapinternal} 
+%\def\mathclap{\mathpalette\mathclapinternal}
+%\def\mathllapinternal#1#2{\llap{$\mathsurround=0pt#1{#2}$}}
+%\def\mathrlapinternal#1#2{\rlap{$\mathsurround=0pt#1{#2}$}}
+
+\AtBeginSection[]{
+	\begin{frame}
+		\vfill
+		\centering
+		\begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+			\usebeamerfont{title}\insertsectionhead\par%
+		\end{beamercolorbox}
+		\vfill
+	\end{frame}
+}
+
+\beamertemplatenavigationsymbolsempty
+\begin{document}
+	\begin{frame}
+		\titlepage
+	\end{frame}
+
+	%\begin{frame}
+	%	\frametitle{Outline}
+	%	\tableofcontents
+	%\end{frame}
+
+	\section{Vectors}
+	\subsection{Basics}
+	\begin{frame}
+		\frametitle{Vectors}
+		\begin{itemize}
+			\onslide<1->{
+				\item In the context of engineering, a \textbf{vector} is an ordered collection of numbers, either real ($\R$) or complex ($\C$).
+				\item In most practical applications, real numbers will suffice.
+				\item Vectors are usually written as columns, but sometimes as rows.
+			}
+		\end{itemize}
+		
+		\onslide<2->{	
+			\begin{example}
+				$$\vect{v}=\begin{pmatrix}\pi\\0\\-2\end{pmatrix}\qquad\text{or}\qquad\vect{v}=\begin{pmatrix}\pi & 0 & -2\end{pmatrix}$$
+			\end{example}
+		}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Vectors}
+		\begin{itemize}
+			\item For each positive integer $n$, we write $\R^n$ to denote the set of all real-valued vectors with $n$ entries: $$\R^n=\left\{\left.\begin{pmatrix}x_1\\\vdots\\x_n\end{pmatrix}\,\right|\,x_1,\ldots,x_n\in\R\right\}\,.$$
+			\item Subscripts are used to denote the entries in a vector.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Computing with Vectors}
+		\begin{itemize}
+			\onslide<1->{
+				\item There are two main operations involving vectors:
+				\begin{itemize}
+					\item vector addition: for any $\vect{v},\vect{w}\in\R^n$, the sum $\vect{v}+\vect{w}\in\R^n$.
+					\item scalar multiplication: for any $\vect{v}\in\R^n$ and $c\in\R$, the product $c\vect{v}\in\R^n$.
+				\end{itemize}
+			}
+			\onslide<2->{
+				\item These are performed element-by-element: $$\begin{pmatrix}v_1\\\vdots\\v_n\end{pmatrix}+\begin{pmatrix}w_1\\\vdots\\w_n\end{pmatrix}=\begin{pmatrix}v_1+w_1\\\vdots\\v_n+w_n\end{pmatrix}\qquad\text{and}\qquad c\begin{pmatrix}v_1\\\vdots\\v_n\end{pmatrix}=\begin{pmatrix}cv_1\\\vdots\\cv_n\end{pmatrix}\,.$$
+			}
+		\end{itemize}
+	\end{frame}
+	
+	\subsection{Linear Combinations}
+	\begin{frame}
+		\frametitle{Linear Combinations}
+		\onslide<1->{
+			\begin{definition}
+				If we have a collection of vectors $\vect{v}_1,\ldots,\vect{v}_k\in\R^n$, then for any choice of scalars $c_1,\ldots,c_k\in\R$, the quantity $$\sum_{i=1}^kc_i\vect{v}_i=c_1\vect{v}_1+\cdots+c_k\vect{v}_k$$ is called a \textbf{linear combination} of $\{v_1,\ldots,v_k\}$.
+			\end{definition}
+		}
+		
+		\onslide<2->{
+			\begin{example}
+				\begin{columns}
+					\column{0.5\textwidth}
+					\centering
+					$$\begin{pmatrix}1\\2\end{pmatrix}=\textcolor{red}{3\begin{pmatrix}1\\0\end{pmatrix}}+\textcolor{blue}{2\begin{pmatrix}-1\\1\end{pmatrix}}$$
+				
+					\column{0.5\textwidth}
+					\centering
+					\begin{tikzpicture}[scale=0.8][>=latex']
+						\draw [help lines] (0,0) grid (3.5,2.5);
+						\draw [<->] (0,2.5) -- (0,0) -- (3.5,0);
+						\node [below right] at (3.5,0) {$x_1$};
+						\node [left] at (0,2.5) {$x_2$};
+						\draw [-Latex, red, thick] (0,0) -- (1,0);
+						\draw [-Latex, red, thick] (1,0) -- (2,0);
+						\draw [-Latex, red, thick] (2,0) -- (3,0);
+						\draw [-Latex, blue, thick] (3,0) -- (2,1);
+						\draw [-Latex, blue, thick] (2,1) -- (1,2);
+						\draw [-Latex, black, thick, dashed] (0,0) -- (1,2);
+					\end{tikzpicture}
+				\end{columns}
+			\end{example}
+		}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Span}
+		\onslide<1->{
+			\begin{definition}
+				The \textbf{span} of a set of vectors $S=\{\vect{v}_1,\ldots,\vect{v}_k\}\subset\R^n$ is the set of all linear combinations of vectors in $S$: $$\spann(S)=\left\{\left.\sum_{i=1}^kc_i\vect{v}_i\,\right|\,c_1,\ldots,c_k\in\R\right\}\,.$$
+			\end{definition}
+		}
+		
+		\onslide<2->{
+			\begin{example}
+				$$\spann\left\{\begin{pmatrix}1\\0\end{pmatrix}\right\}=\left\{\left.\begin{pmatrix}x_1\\0\end{pmatrix}\,\right|\,x_1\in\R\right\}=\text{``the \ensuremath{x_1}-axis (in \ensuremath{\R^2})''}$$
+			\end{example}
+		}
+		
+		\onslide<3->{
+			\begin{itemize}
+				\item Every vector $\vect{v}_i\in S$ is also in $\spann(S)$: $\vect{v}_i=1\cdot\vect{v}_i$.
+				\item In all cases, the zero vector $\vect{0}=\sum_i0\cdot\vect{v}_i\in\spann(S)$.
+			\end{itemize}
+		}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Linear Independence}
+		\onslide<1->{
+			Question: Given $\vect{w}\in\spann(S)$, how many ways can we write $\vect{w}$ as a linear combination of the vectors in $S$?
+		}
+	
+		\onslide<2->{
+			\begin{definition}
+				We say a set of vectors $\{\vect{v}_1,\ldots,\vect{v}_k\}$ is \textbf{linearly independent} if the \emph{only} way to form a zero vector by linear combination is with $c_1=\cdots=c_k=0$.
+			\end{definition}
+		}
+		
+		\onslide<3->{
+			\begin{example}
+				Two vectors that are linearly independent:
+				$$c_1\begin{pmatrix}1\\0\end{pmatrix}+c_2\begin{pmatrix}-1\\1\end{pmatrix}=\begin{pmatrix}c_1-c_2\\c_2\end{pmatrix}=\begin{pmatrix}0\\0\end{pmatrix}\implies c_2=0\implies c_1=0$$
+			\end{example}
+		}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Linear Independence}
+		\onslide<1->{
+			\begin{itemize}
+				\item If $S=\{\vect{v}_1,\ldots,\vect{v}_k\}$ is linearly independent, then there is only one way to write $\vect{w}\in\spann(S)$ as a linear combination of $\{\vect{v}_1,\ldots,\vect{v}_k\}$.
+				\item Otherwise, we say $S$ is \textbf{linearly dependent}.
+				\begin{itemize}
+					\item Then we can write one vector as a linear combination of the others.
+					\item There are infinitely many linear combinations that give $\vect{w}\in\spann(S)$.
+				\end{itemize}
+			\end{itemize}
+		}
+		
+		\onslide<2->{
+			\begin{example}
+				Three vectors that are linearly dependent:
+				$$3\begin{pmatrix}1\\0\end{pmatrix}+2\begin{pmatrix}-1\\1\end{pmatrix}+(-1)\begin{pmatrix}1\\2\end{pmatrix}=\begin{pmatrix}0\\0\end{pmatrix}$$
+			\end{example}
+		}
+	\end{frame}
+	
+	\subsection{Vector Spaces}
+	\begin{frame}
+		\onslide<1->{
+			\frametitle{Vector Spaces}
+			\begin{definition}
+				A \textbf{vector space} is a set $V\subseteq\R^n$ that is closed under linear combination: for any $\vect{v}_1,\vect{v}_2\in V$ and $c_1,c_2\in\R$, we have $c_1\vect{v}_1+c_2\vect{v}_2\in V$.
+			\end{definition}
+		}
+		
+		\onslide<2->{
+			\begin{alertblock}{Note}
+				This definition is particular to subsets of $\R^n$ with the standard vector operations. The fully general case is outside our present scope.
+			\end{alertblock}
+		}
+		
+		\onslide<3->{
+			\begin{example}
+				\begin{itemize}
+					\item For any positive integer $n$, $\R^n$ is a vector space.
+					\item For any set of vectors $S\subset\R^n$, $\spann(S)$ is a vector space.
+					\item The set of only the zero vector, $\{\vect{0}\}$ is a vector space.
+				\end{itemize}
+			\end{example}
+		}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Basis}
+		\onslide<1->{
+			\begin{definition}
+				A set of vectors $S=\{\vect{v}_1,\ldots,\vect{v}_k\}\subset\R^n$ is a \textbf{basis} for vector space $V$ if:
+				\begin{itemize}
+					\item $\spann(S)=V$, and
+					\item $S$ is linearly independent.
+				\end{itemize}
+			\end{definition}
+		}
+		
+		\onslide<2->{
+			\begin{itemize}
+				\item Spanning guarantees we can represent each $\vect{w}\in V$.
+				\item Linear independence ensures there is no redundant information.
+			\end{itemize}
+		}
+		
+		\onslide<3->{
+			\begin{example}
+				$\left\{\begin{pmatrix}1\\0\end{pmatrix},\,\begin{pmatrix}-1\\1\end{pmatrix}\right\}$ is a basis for $\R^2$: $\begin{pmatrix}x_1\\x_2\end{pmatrix}=(x_1+x_2)\begin{pmatrix}1\\0\end{pmatrix}+x_2\begin{pmatrix}-1\\1\end{pmatrix}$.
+			\end{example}
+		}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Standard Basis Vectors}
+		\begin{definition}
+			The \textbf{standard basis} for $\R^n$ is denoted $\mathcal{E}_n=\{\vect{e}_1,\ldots,\vect{e}_n\}$ and consists of the $n$ vectors that form the columns of an $n\times n$ identity matrix. That is,
+			\begin{equation*}
+				\vect{e}_1=\begin{pmatrix}
+					1\\0\\\vdots\\0
+				\end{pmatrix}\,,\qquad\vect{e}_2=\begin{pmatrix}
+					0\\1\\\vdots\\0
+				\end{pmatrix}\,,\qquad\cdots,\qquad\vect{e}_n=\begin{pmatrix}
+					0\\0\\\vdots\\1
+				\end{pmatrix}
+			\end{equation*}
+		\end{definition}
+		\begin{itemize}
+			\item<2-> Exercise: Confirm that $\mathcal{E}_n$ satisfies the defining properties of a basis.
+			\item<3> For any $A\in\R^{m\times n}$ and $\vect{e}_k\in\R^n$, $$A\vect{e}_k=\text{the }k^\text{th}\text{ column of }A\,.$$
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Dimension}
+		\onslide<1->{
+			\begin{theorem}
+				Let $V\subseteq\R^n$ be a vector space. Every basis for $V$ contains the same number of elements.
+			\end{theorem}
+		}
+		
+		\onslide<2->{
+			\begin{definition}
+				Consider a vector space $V\subseteq\R^n$. The \textbf{dimension} of $V$, $\dinn(V)$, is the number of elements in any of its bases.
+			\end{definition}
+		}
+		
+		\onslide<3->{
+			\begin{example}
+				\begin{itemize}
+					\item For any positive integer $n$, $\dinn(\R^n)=n$.
+					\item If $V=\{\vect{x}\in\R^3\,|\,x_2=x_3\}$, $\dinn(V)=2$. (Can you find a basis for $V$?)
+				\end{itemize}
+			\end{example}
+		}
+	\end{frame}
+
+	\section{Matrices}
+	\subsection{Basics}
+	\begin{frame}
+		\frametitle{Matrices}
+		\onslide<1->{
+			\begin{itemize}
+				\item A \textbf{matrix} is a rectangular array of numbers, indexed by two values.
+				\item We can add and scale matrices in analogous fashion to vectors.
+				\item Some (but not all) matrices can be multiplied together.
+			\end{itemize}
+		}
+		
+		\onslide<2->{
+			\begin{example}
+				$$B=\begin{pmatrix}1 & 2 & -2\\0 & -3 & 1\end{pmatrix}\in\R^{2\times 3}$$ is a two-by-three matrix with $b_{1,3}=-2$, $b_{2,1}=0$, \emph{etc}.
+			\end{example}
+		}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Matrix Multiplication}
+		\onslide<1->{
+			\begin{definition}
+				Let $A\in\R^{m\times n}$ and $B\in\R^{n\times p}$ be matrices. We define the product $C=AB\in\R^{m\times p}$ with entries $$c_{ij}=\sum_{k=1}^na_{ik}b_{kj}\,.$$
+			\end{definition}
+		}
+		
+		\only<1,4>{
+			\begin{equation*}
+				\left(
+				\begin{array}{ccc}
+					c_{11} & \cdots & c_{1p} \\
+					\vdots & \ddots & \vdots \\
+					c_{m1} & \cdots & c_{mp}
+				\end{array}
+				\right)=\left(
+				\begin{array}{ccc}
+					a_{11} & \cdots & a_{1n} \\
+					\vdots & \ddots & \vdots \\
+					a_{m1} & \cdots & a_{mn}
+				\end{array}
+				\right)\left(
+				\begin{array}{ccc}
+					b_{11} & \cdots & b_{1p} \\
+					\vdots & \ddots & \vdots \\
+					b_{n1} & \cdots & b_{np}
+				\end{array}
+				\right)
+			\end{equation*}
+		}
+		
+		\only<2>{
+			\begin{equation*}
+				\left(
+					\begin{array}{ccc}
+						\cellcolor[HTML]{FF3F3F}{c_{11}} & \cdots & c_{1p} \\
+						\vdots & \ddots & \vdots \\
+						c_{m1} & \cdots & c_{mp}
+					\end{array}
+				\right)=\left(
+					\begin{array}{ccc}
+						\rowcolor[HTML]{FF3F3F} 
+						a_{11} & \cdots & a_{1n} \\
+						\vdots & \ddots & \vdots \\
+						a_{m1} & \cdots & a_{mn}
+					\end{array}
+				\right)\left(
+					\begin{array}{>{\columncolor[HTML]{FF3F3F}}c cc}
+						b_{11} & \cdots & b_{1p} \\
+						\vdots & \ddots & \vdots \\
+						b_{n1} & \cdots & b_{np}
+					\end{array}
+				\right)
+			\end{equation*}
+		}
+	
+		\only<3>{
+			\begin{equation*}
+				\left(
+				\begin{array}{ccc}
+					c_{11} & \cdots & c_{1p} \\
+					\vdots & \ddots & \vdots \\
+					c_{m1} & \cdots & \cellcolor[HTML]{3FFF3F}{c_{mp}}
+				\end{array}
+				\right)=\left(
+				\begin{array}{ccc}
+					a_{11} & \cdots & a_{1n} \\
+					\vdots & \ddots & \vdots \\
+					\rowcolor[HTML]{3FFF3F} 
+					a_{m1} & \cdots & a_{mn}
+				\end{array}
+				\right)\left(
+				\begin{array}{cc >{\columncolor[HTML]{3FFF3F}}c}
+					b_{11} & \cdots & b_{1p} \\
+					\vdots & \ddots & \vdots \\
+					b_{n1} & \cdots & b_{np}
+				\end{array}
+				\right)
+			\end{equation*}
+		}
+		
+		%$$\begin{pmatrix}\textcolor{red}{\boxed{c_{11}}} & \cdots & c_{1p}\\\vdots & \ddots & \vdots\\c_{m1} & \cdots & c_{mp}\end{pmatrix}=\begin{pmatrix}\textcolor{red}{a_{11}} & \textcolor{red}{\cdots} & \textcolor{red}{a_{1n}}\\\vdots & \ddots & \vdots\\a_{m1} & \cdots & a_{mn}\end{pmatrix}\begin{pmatrix}\textcolor{red}{b_{11}} & \cdots & b_{1p}\\\textcolor{red}{\vdots} & \ddots & \vdots\\\textcolor{red}{b_{n1}} & \cdots & b_{np}\end{pmatrix}$$
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Matrices as Functions}
+		\onslide<1->{
+			\begin{itemize}
+				\item We often associate a matrix $A\in\R^{m\times n}$ to the function $f(\vect{v})=A\vect{v}$.
+				\item This function maps a vector $\vect{v}\in\R^n$ to the product $A\vect{v}\in\R^m$.
+			\end{itemize}
+		}
+		
+		\onslide<2->{
+			\begin{definition}
+				The \textbf{range} of a matrix $A\in\R^{m\times n}$ (also called \textbf{image} or \textbf{column space}) is the set of all possible outputs of matrix-vector multiplication: $$\range(A)=\{A\vect{v}\,|\,\vect{v}\in\R^n\}\subseteq\R^m\,.$$
+			\end{definition}
+		}
+		
+		\onslide<3->{
+			\begin{definition}
+				The \textbf{null space} of a matrix $A\in\R^{m\times n}$ (also called \textbf{kernel}) is the set of all vectors for which matrix-vector multiplication yields the zero vector: $$\nulls(A)=\{\vect{v}\in\R^n\,|\,A\vect{v}=\vect{0}\}\subseteq\R^n\,.$$
+			\end{definition}
+		}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Range and Nullspace}
+		\begin{example}
+			\onslide<1->{
+				Let $A=\begin{pmatrix}1 & -1\\-1 & 1\end{pmatrix}$. Then for $\vect{x}=\begin{pmatrix}x_1\\x_2\end{pmatrix}$, we have $A\vect{x}=\begin{pmatrix}x_1-x_2\\x_2-x_1\end{pmatrix}$.
+				\vspace{12pt}
+			}
+			
+			\begin{columns}
+				\column{0.5\textwidth}
+				\begin{itemize}
+					\onslide<2->{
+						\item For all $\vect{x}$, $(A\vect{x})_1=-(A\vect{x})_2$. $$\textcolor{blue}{\range(A)=\left\{\left.\begin{pmatrix}z\\-z\end{pmatrix}\,\right|\,z\in\R\right\}}$$
+					}
+				
+					\onslide<3->{
+						\item $A\vect{x}=\vect{0}\iff x_1=x_2$. $$\textcolor{red}{\nulls(A)=\left\{\left.\begin{pmatrix}z\\z\end{pmatrix}\,\right|\,z\in\R\right\}}$$
+					}
+				\end{itemize}
+				
+				\column{0.5\textwidth}
+				\centering
+				\begin{tikzpicture}[scale=0.4][>=latex']
+					\draw [help lines] (-4.8,-4.8) grid (4.8,4.8);
+					\draw [<->] (5,0) -- (-5,0);
+					\draw [<->] (0,5) -- (0,-5);
+					\node [right] at (5,0) {$x_1$};
+					\node [above] at (0,5) {$x_2$};
+					
+					\onslide<2->{
+						\draw [Latex-Latex, blue, thick] (-4.8,4.8) -- (4.8,-4.8);
+						\node [above right, blue] at (4.8, -4.8) {$\range(A)$};
+					}
+				
+					\onslide<3->{
+						\draw [Latex-Latex, red, thick] (-4.8,-4.8) -- (4.8,4.8);
+						\node [below right, red] at (4.8, 4.8) {$\nulls(A)$};
+					}
+				\end{tikzpicture}
+			\end{columns}
+		\end{example}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Range and Nullspace}
+		\onslide<1->{
+			\begin{theorem}
+				Let $A\in\R^{m\times n}$ be a matrix. Then $\range(A)$ and $\nulls(A)$ are vector spaces.
+			\end{theorem}
+		}
+		
+		\onslide<2->{
+			\begin{proof}
+				(i) Suppose $\vect{u},\vect{v}\in\range(A)$. Then there exist $\vect{x},\vect{y}\in\R^n$ such that $A\vect{x}=\vect{u}$ and $A\vect{y}=\vect{v}$. For any scalars $c_1,c_2\in\R$, we have $$c_1\vect{u}+c_2\vect{v}=c_1A\vect{x}+c_2A\vect{y}=A(c_1\vect{x}+c_2\vect{y})\in\range(A)\,.$$
+				
+				\onslide<3->{
+					(ii) Suppose $\vect{u},\vect{v}\in\nulls(A)$. Then $A\vect{u}=\vect{0}$ and $A\vect{v}=\vect{0}$. For any scalars $c_1,c_2\in\R$, we have $$A(c_1\vect{u}+c_2\vect{v})=c_1A\vect{u}+c_2A\vect{v}=c_1\vect{0}+c_2\vect{0}=\vect{0}\,,$$ so $c_1\vect{u}+c_2\vect{v}\in\nulls(A)$.
+				}
+			\end{proof}
+		}
+	\end{frame}
+	
+	\subsection{Linear Systems}
+	\begin{frame}
+		\frametitle{Linear Systems}
+		\begin{itemize}
+			\onslide<1->{
+				\item Consider a set of $m$ linear equations with $n$ variables:
+				\begin{align*}
+					a_{11}x_1+a_{12}x_2+ & \cdots+a_{1n}x_n=b_1\\
+					\vdots\hspace{20mm} & \ddots\hspace{19mm}\vdots\\
+					a_{m1}x_1+a_{m2}x_2+ & \cdots+a_{mn}x_n=b_1
+				\end{align*}
+			}
+		
+			\onslide<2->{
+				\item We can write the system as a single matrix equation: $A\vect{x}=\vect{b}$.
+			}
+			
+			\onslide<3->{
+				\item Given $A$ and $\vect{b}$, how many solution vectors $\vect{x}$ exist?
+				\begin{itemize}
+					\item zero?
+					\item one?
+					\item infinitely many?
+				\end{itemize}
+			}
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Gaussian Elimination}
+		\begin{itemize}
+			\onslide<1->{
+				\item Suppose we want to solve the following system:
+				\begin{equation*}
+					\sysdelim..
+					\systeme{
+						x_1 - 2x_2 + 3x_3 =  7,
+						-x_1 +  x_2 - 2x_3 = -5,
+						2x_1 -  x_2 -  x_3 =  4
+					}\tag{$\star$}
+				\end{equation*}
+			}
+		
+			\onslide<2->{
+				\item Begin by building the \textbf{augmented matrix} of coefficients:
+				\begin{equation*}
+					\left(\begin{array}{rrr@{\quad}|@{\quad}r}  
+						 1 & -2 &  3 &  7\\  
+						-1 &  1 & -2 & -5\\
+						 2 & -1 & -1 &  4
+					\end{array}\right)
+				\end{equation*}
+			}
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Row Reduction}
+		\begin{itemize}
+			\onslide<1->{
+				\item There are three \textbf{row operations} we can use to convert the augmented matrix into a form that reveals the solution:
+				\begin{itemize}
+					\item Multiply a row by a constant $c\neq0$,
+					\item Add a multiple of one row to another row,
+					\item Swap two rows.
+				\end{itemize}
+			}
+		
+			\onslide<2->{
+				\item Performing any combination of these operations on the rows leaves the set of solutions unchanged.
+			}
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Row Reduction}
+		\begin{example}
+			%Let's solve the above system ($\star$) with row operations.
+			\only<1>{
+				\begin{equation*}
+					\left(\begin{array}{rrr@{\quad}|@{\quad}r}  
+						 1 & -2 &  3 &  7\\  
+						-1 &  1 & -2 & -5\\
+						 2 & -1 & -1 &  4
+					\end{array}\right)
+					\textcolor{red}{\xrightarrow{\texttt{R2\,+=\,R1}}
+					\left(\begin{array}{rrr@{\quad}|@{\quad}r}  
+						1 & -2 &  3 & 7\\  
+						0 & -1 &  1 & 2\\
+						2 & -1 & -1 & 4
+					\end{array}\right)}
+				\end{equation*}
+			}
+			\only<1-2>{
+				\begin{equation*}
+					\textcolor{red}{\left(\begin{array}{rrr@{\quad}|@{\quad}r}  
+						1 & -2 &  3 & 7\\  
+						0 & -1 &  1 & 2\\
+						2 & -1 & -1 & 4
+					\end{array}\right)}
+					\textcolor{blue}{\xrightarrow{\texttt{R3\,+=\,(-2)R1}}
+					\left(\begin{array}{rrr@{\quad}|@{\quad}r}  
+						1 & -2 &  3 &   7\\  
+						0 & -1 &  1 &   2\\
+						0 &  3 & -7 & -10
+					\end{array}\right)}
+				\end{equation*}
+			}
+			\only<2-3>{
+				\begin{equation*}
+					\textcolor{blue}{\left(\begin{array}{rrr@{\quad}|@{\quad}r}  
+						1 & -2 &  3 &   7\\  
+						0 & -1 &  1 &   2\\
+						0 &  3 & -7 & -10
+					\end{array}\right)}
+					\xrightarrow{\texttt{R2\,*=\,-1}}
+					\left(\begin{array}{rrr@{\quad}|@{\quad}r}  
+						1 & -2 &  3 &   7\\  
+						0 &  1 & -1 &  -2\\
+						0 &  3 & -7 & -10
+					\end{array}\right)
+				\end{equation*}
+			}
+			\only<3-4>{
+				\begin{equation*}
+					\left(\begin{array}{rrr@{\quad}|@{\quad}r}  
+						1 & -2 &  3 &   7\\  
+						0 &  1 & -1 &  -2\\
+						0 &  3 & -7 & -10
+					\end{array}\right)
+					\textcolor{red}{\xrightarrow{\texttt{R3\,+=\,(-3)R2}}
+					\left(\begin{array}{rrr@{\quad}|@{\quad}r}  
+						1 & -2 &  3 &  7\\  
+						0 &  1 & -1 & -2\\
+						0 &  0 & -4 & -4
+					\end{array}\right)}
+				\end{equation*}
+			}
+			\only<4>{
+				\begin{equation*}
+					\textcolor{red}{\left(\begin{array}{rrr@{\quad}|@{\quad}r}  
+						1 & -2 &  3 &  7\\  
+						0 &  1 & -1 & -2\\
+						0 &  0 & -4 & -4
+					\end{array}\right)}
+					\textcolor{blue}{\xrightarrow{\texttt{R3\,*=\,-1/4}}
+					\left(\begin{array}{rrr@{\quad}|@{\quad}r}  
+						1 & -2 &  3 &  7\\  
+						0 &  1 & -1 & -2\\
+						0 &  0 &  1 &  1
+					\end{array}\right)}
+				\end{equation*}
+			}
+			\only<5>{
+				The total effect of our row operations:
+				\begin{equation*}
+					\sysdelim\{\}
+					\systeme{
+						x_1 - 2x_2 + 3x_3 =  7,
+						-x_1 +  x_2 - 2x_3 = -5,
+						2x_1 -  x_2 -  x_3 =  4
+					}\longrightarrow
+					\sysdelim\{\}
+					\systeme{
+						x_1 - 2x_2 + 3x_3 =  7,
+						x_2 -  x_3 = -2,
+						x_3 =  1
+					}
+				\end{equation*}
+				``Back substitution'' yields the answer:
+				\begin{columns}
+					\column{0.67\textwidth}
+					\begin{align*}
+						x_3=1 & \implies x_2=-2+x_3=-2+1=-1\\
+						& \implies x_1=7+2x_2-3x_3=2
+					\end{align*}
+					
+					\column{0.33\textwidth}
+					\begin{equation*}
+						\vect{x}=\begin{pmatrix}2\\-1\\1\end{pmatrix}
+					\end{equation*}
+				\end{columns}
+				
+			}
+		\end{example}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Systems with No Solutions}
+		\onslide<1->{
+			\begin{equation*}
+				\sysdelim..
+				\systeme{
+					 x_1 - 2x_2 + 3x_3 = 1,
+					-x_1 +  x_2 - 2x_3 = 1,
+					2x_1 -  x_2 + 3x_3 = 1
+				}
+			\end{equation*}
+		}
+	
+		\begin{itemize}
+			\onslide<1->{
+				\item Performing row reduction, we obtain
+				\begin{equation*}
+					\left(\begin{array}{rrr@{\quad}|@{\quad}r}  
+						1 & -2 &  3 & 1\\  
+						-1 &  1 & -2 & 1\\
+						2 & -1 &  3 & 1
+					\end{array}\right)
+					\longrightarrow
+					\left(\begin{array}{rrr@{\quad}|@{\quad}r}  
+						1 & -2 &  3 &  1\\  
+						0 &  1 & -1 & -2\\
+						0 &  0 &  0 &  5
+					\end{array}\right)\,.
+				\end{equation*}
+			}
+		
+			\onslide<2->{
+				\item The bottom row implies $0=5$, so the system is inconsistent.
+				\item There is no $\vect{x}\in\R^3$ that satisfies all three equations.
+			}
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Systems with Multiple Solutions}
+		\onslide<1->{
+			\begin{equation*}
+				\sysdelim..
+				\systeme{
+				 x_1 - 2x_2 + 3x_3 =  2,
+					-x_1 +  x_2 - 2x_3 =  1,
+					2x_1 -  x_2 + 3x_3 = -5
+				}
+			\end{equation*}
+		}
+	
+		\begin{itemize}
+			\onslide<1->{
+				\item Performing row reduction, we obtain
+				\begin{equation*}
+					\left(\begin{array}{rrr@{\quad}|@{\quad}r}  
+					 1 & -2 &  3 &  2\\  
+						-1 &  1 & -2 &  1\\
+					 2 & -1 &  3 & -5
+					\end{array}\right)
+					\longrightarrow
+					\left(\begin{array}{rrr@{\quad}|@{\quad}r}  
+						1 & -2 &  3 &  2\\  
+						0 &  1 & -1 & -3\\
+						0 &  0 &  0 &  0
+					\end{array}\right)\,.
+				\end{equation*}
+			}
+		
+			\onslide<2->{
+				\item The bottom row has become the trivial equation $0=0$.
+				\item We must analyze the remaining equations.
+			}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Systems with Multiple Solutions}
+		\onslide<1->{
+			\begin{equation*}
+				\sysdelim..
+				\systeme{
+					x_1 - 2x_2 + 3x_3 =  2,
+					x_2 -  x_3 = -3
+				}
+			\end{equation*}
+		}
+	
+		\begin{itemize}
+			\onslide<2->{
+				\item Suppose we arbitrarily fix $x_3=z\in\R$. It follows that
+				\begin{equation*}
+					\sysdelim\{\}
+					\systeme{
+						x_1 - 2x_2 =  2 - 3z,
+						x_2 = -3 +  z
+					}\implies x_1=2-3z+2(-3+z)=-z-4\,.
+				\end{equation*}
+			}
+			
+			\onslide<3->{
+				\item We can find a solution for any choice of $x_3\in\R$.
+				\item The set of all solutions is $$\left\{\left.z\begin{pmatrix}-1\\1\\1\end{pmatrix}+\begin{pmatrix}-4\\-3\\0\end{pmatrix}\,\right|\,z\in\R\right\}\,.$$
+			}
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Homogeneous Linear Systems}
+		\begin{definition}
+			A linear system of equations $A\vect{x}=\vect{b}$ is called \textbf{homogeneous} if $\vect{b}=\vect{0}$. Otherwise, the system is called \textbf{inhomogeneous}.
+		\end{definition}
+		\begin{itemize}
+			\item A homogeneous system always has the trivial solution $\vect{x}=\vect{0}$.
+			\onslide<2->{
+				\item Recall: if $S=\{\vect{v}_1,\ldots,\vect{v}_k\}$ are linearly dependent, there are multiple ways to write $\vect{w}\in\spann(S)$ as a linear combination:
+				\begin{equation*}
+					\vect{w}=\sum_{i=1}^kc_i\vect{v}_i=\sum_{i=1}^kc_i\vect{v}_i+\vect{0}=\sum_{i=1}^kc_i\vect{v}_i+\sum_{i=1}^kd_i\vect{v}_i=\sum_{i=1}^k(c_i+d_i)\vect{v}_i\,.
+				\end{equation*}
+			}
+			\onslide<3->{
+				\item A nontrivial null space indicates multiple solutions to a system:
+				\begin{itemize}
+					\item Suppose $\vect{y}$ is one solution: $A\vect{y}=\vect{b}$.
+					\item Then the set of all solutions is $\{\vect{y}+\vect{x}\,|\,\vect{x}\in\nulls(A)\}$, since $$A(\vect{y}+\vect{x})=A\vect{y}+A\vect{x}=\vect{b}+A\vect{x}=\vect{b}\iff A\vect{x}=\vect{0}\,.$$
+				\end{itemize}
+			}
+		\end{itemize}
+	\end{frame}	
+	
+	\begin{frame}
+		\frametitle{Matrix Inverses}
+		\onslide<1->{
+			\begin{itemize}
+				\item Consider the system $A\vect{x}=\vect{b}$ with $A\in\R^{n\times n}$ and $\vect{x},\vect{b}\in\R^n$.
+				\item If the rows of $A$ are linearly independent, then there exists a matrix $B\in\R^{n\times n}$ such that $$AB=BA=I=\begin{pmatrix}1 & 0 & \cdots & 0\\0 & 1 & \cdots & 0\\\vdots & \vdots & \ddots & \vdots\\0 & 0 & \cdots & 1\end{pmatrix}\,.$$
+			\end{itemize}
+		}
+	
+		\onslide<2->{
+			\begin{definition}
+				Let $A\in\R^{n\times n}$ be a square matrix. If $B\in\R^{n\times n}$ satisfies $AB=BA=I$, we call $B$ the \textbf{inverse} of $A$ and write $B=A^{-1}$.
+			\end{definition}
+		}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Matrix Inverses: Comments}
+		\begin{itemize}
+			\item We can solve linear systems by multiplying with the inverse matrix:
+				\begin{equation*}
+					\vect{x}=I\vect{x}=A^{-1}A\vect{x}=A^{-1}\vect{b}\,.
+				\end{equation*}
+			\item There are infinitely many square matrices that do not have an inverse, so ``matrix division'' is a misnomer.
+			\item If a matrix has an inverse, it is unique: suppose $B$ and $C$ are both inverses of $A$; then $B=IB=CAB=CI=C$.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Fundamental Theorem of Linear Algebra}
+		\begin{definition}
+			The \textbf{rank} of a matrix $A\in\R^{m\times n}$ is the dimension of its column space: $$\rk(A)=\dim(\range(A))\,.$$
+		\end{definition}
+		\begin{theorem}
+			The rank of any matrix $A$ equals both
+			\begin{itemize}
+				\item the maximum number of linearly independent columns of $A$, and
+				\item the maximum number of linearly independent rows of $A$.
+			\end{itemize}
+		\end{theorem}
+	
+		\only<1>{
+			\begin{example}
+				\begin{equation*}
+					\rk\left[\begin{pmatrix}1 & 2\\2 & 4\end{pmatrix}\right]=1\qquad\rk\left[\begin{pmatrix}1 & 2 & 1\\2 & 4 & 0\end{pmatrix}\right]=2\qquad\rk\left[\begin{pmatrix}0 & 0\\0 & 0\end{pmatrix}\right]=0
+				\end{equation*}
+			\end{example}
+		}
+	
+		\only<2>{
+			\alert{
+				\begin{theorem}[FToLA]
+					Let $A\in\R^{m\times n}$ be any matrix. $$\rk(A)+\dim(\nulls(A))=n\,.$$
+				\end{theorem}
+			}
+		}
+	\end{frame}
+	
+	\subsection{Reduced Row Echelon Form}
+	\begin{frame}
+		\frametitle{A Detailed Example}
+		\begin{itemize}
+			\item Consider a linear system of the form $A\vect{x}=\vect{b}$.
+			\item For now, let's suppose the system is homogeneous, \emph{i.e.}, $\vect{b}=\vect{0}$.
+		\end{itemize}
+	
+		\begin{equation*}
+			A=\begin{pmatrix}
+				 0 & -1 &  2 & 2 & -2\\
+				-2 & -5 & -2 & 0 &  2\\
+				-1 & -1 & -4 & 1 &  0\\
+				 1 &  3 &  0 & 0 & -1
+			\end{pmatrix}\in\R^{4\times 5}
+		\end{equation*}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Row Operations}
+		\begin{align*}
+			\begin{pmatrix}
+				 0 & -1 &  2 & 2 & -2\\
+				-2 & -5 & -2 & 0 &  2\\
+				-1 & -1 & -4 & 1 &  0\\
+				 1 &  3 &  0 & 0 & -1
+			\end{pmatrix} & \xrightarrow{\texttt{R1\,\lrarr\,R4}}\xrightarrow{\texttt{R2\,+=\,(2)R1}}\xrightarrow{\texttt{R3\,+=\,R1}}\xrightarrow{\texttt{R3\,+=\,(-2)R2}}\\
+			\xrightarrow{\texttt{R4\,+=\,R2}}\xrightarrow{\texttt{R4\,+=\,(-2)R3}} & \xrightarrow{\texttt{R1\,+=\,(-3)R2}}\begin{pmatrix}
+				1 & 0 &  6 & 0 & -1\\
+				0 & 1 & -2 & 0 &  0\\
+				0 & 0 &  0 & 1 & -1\\
+				0 & 0 &  0 & 0 &  0
+			\end{pmatrix}
+		\end{align*}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Reduced Row Echelon Form}
+		\begin{equation*}
+			\rref(A)=\begin{pmatrix}
+				\textcolor<2>{red}{1} & 0 &  6 & 0 & -1\\
+				0 & \textcolor<2>{red}{1} & -2 & 0 &  0\\
+				0 & 0 &  0 & \textcolor<2>{red}{1} & -1\\
+				0 & 0 &  0 & 0 &  0
+			\end{pmatrix}
+		\end{equation*}
+		
+		\begin{definition}
+			A matrix $B\in\R^{m\times n}$ is in \textbf{reduced row echelon form} (RREF) if:
+			\begin{itemize}
+				\item Rows containing only zeros are at the bottom.
+				\onslide<2->{
+					\item The \textcolor<2>{red}{leading entry} (``pivot'') in each non-zero row sits to the right of the leading entry in the row above.
+				}
+				\onslide<3->{
+					\item Each leading entry is a $1$ and is the only non-zero entry in the corresponding column.
+				}
+			\end{itemize}
+		\end{definition}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{RREF and the Fundamental Theorem of Linear Algebra}
+		\begin{equation*}
+			\rref\left[\begin{pmatrix}
+				\textcolor<2>{red}{0} &  \textcolor<2>{red}{-1} &  \textcolor<3>{red}{2} & \textcolor<2>{red}{2} & \textcolor<3>{red}{-2}\\
+				\textcolor<2>{red}{-2} & \textcolor<2>{red}{-5} & \textcolor<3>{red}{-2} & \textcolor<2>{red}{0} &  \textcolor<3>{red}{2}\\
+				\textcolor<2>{red}{-1} & \textcolor<2>{red}{-1} & \textcolor<3>{red}{-4} & \textcolor<2>{red}{1} &  \textcolor<3>{red}{0}\\
+				\textcolor<2>{red}{1} &  \textcolor<2>{red}{3} &  \textcolor<3>{red}{0} & \textcolor<2>{red}{0} & \textcolor<3>{red}{-1}
+			\end{pmatrix}\right]=\begin{pmatrix}
+				\textcolor<2>{orange}{1} & 0 & \textcolor<3>{orange}{6} & 0 & \textcolor<3>{orange}{-1}\\
+				0 & \textcolor<2>{orange}{1} & \textcolor<3>{orange}{-2} & 0 &  0\\
+				0 & 0 &  0 & \textcolor<2>{orange}{1} & \textcolor<3>{orange}{-1}\\
+				0 & 0 &  0 & 0 &  0
+			\end{pmatrix}
+		\end{equation*}
+		
+		\begin{itemize}
+			\item Recall: for any $A\in\R^{m\times n}$, $\rk(A)+\dim(\nulls(A))=n$.
+			\item Each column corresponds either to a \textcolor<2>{red}{pivot} or to a \textcolor<3>{red}{free variable}.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{RREF and Range of a Matrix}
+		\begin{equation*}
+			\rref\left[\begin{pmatrix}
+				 0 & -1 &  2 & 2 & -2\\
+				-2 & -5 & -2 & 0 &  2\\
+				-1 & -1 & -4 & 1 &  0\\
+				 1 &  3 &  0 & 0 & -1
+			\end{pmatrix}\right]=\begin{pmatrix}
+				1 & 0 &  6 & 0 & -1\\
+				0 & 1 & -2 & 0 &  0\\
+				0 & 0 &  0 & 1 & -1\\
+				0 & 0 &  0 & 0 &  0
+			\end{pmatrix}
+		\end{equation*}
+		
+		\begin{align*}
+			\range(A) & =\spann\{\text{columns from }A\text{ that contain pivots in }\rref(A)\}\\
+			& =\spann\left\{\begin{pmatrix}0\\-2\\-1\\1\end{pmatrix},\,\begin{pmatrix}1\\-5\\-1\\3\end{pmatrix},\,\begin{pmatrix}2\\0\\1\\0\end{pmatrix}\right\}\,.
+		\end{align*}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{RREF and Null Space of a Matrix}
+		\begin{equation*}
+			\nulls(A)=\{\vect{x}\in\R^n\,|\,A\vect{x}=\vect{0}\}=\{\text{solutions to homogeneous system}\}\,.
+		\end{equation*}
+		
+		\begin{itemize}
+			\item For our example system, $A\vect{x}=\vect{0}$ entails
+			\begin{equation*}
+				\sysdelim..
+				\systeme{
+					x_1 + 6x_3 - x_5 = 0,
+					x_2 - 2x_3 = 0,
+					x_4 -  x_5 = 0
+				}\implies\sysdelim..
+				\systeme{
+					-6x_3 + x_5 = x_1,
+					2x_3       = x_2,
+					x_5 = x_4
+				}
+			\end{equation*}
+			\onslide<2->{
+				\item We can find a basis for $\nulls(A)$ by setting one free variable at a time to the value 1 and solving for the ``pivot'' variables.
+				\begin{equation*}
+					\nulls(A)=\spann\left\{\begin{pmatrix}-6\\2\\1\\0\\0\end{pmatrix},\,\begin{pmatrix}1\\0\\0\\1\\1\end{pmatrix}\right\}
+				\end{equation*}
+			}
+		\end{itemize}
+	\end{frame}	
+	
+	\subsection{Eigenvalues}
+	\begin{frame}
+		\frametitle{Eigenvalues}
+		\onslide<1->{
+			\begin{definition}
+				Let $A\in\R^{n\times n}$. A scalar $\lambda\in\R$ is called an \textbf{eigenvalue} of $A$ if there exists a \emph{non-zero} vector $\vect{v}\in\R^n$ satisfying $A\vect{v}=\lambda\vect{v}$. In such case, $\vect{v}$ is called an \textbf{eigenvector} of $A$ associated with $\lambda$.
+			\end{definition}
+		}
+		
+		\onslide<2->{
+			\begin{example}
+				\begin{columns}
+					\column{0.67\textwidth}
+					\;Consider the matrix
+					\begin{footnotesize}
+						\begin{equation*} 
+							A=\begin{pmatrix}1 & 0.5\\1 & 1.5\end{pmatrix}\,.
+						\end{equation*}
+					\end{footnotesize}
+			
+					\onslide<3->{The eigenvalues of $A$ are $2$ and $0.5$, since}
+					\begin{footnotesize}
+						\begin{align*} 
+							\onslide<3->{\begin{pmatrix}1 & 0.5\\1 & 1.5\end{pmatrix}\textcolor{red}{\begin{pmatrix}1\\2\end{pmatrix}} & =\begin{pmatrix}2 \\4\end{pmatrix}=2\textcolor{red}{\begin{pmatrix}1\\2\end{pmatrix}}\,,}\\
+							\onslide<4->{\begin{pmatrix}1 & 0.5\\1 & 1.5\end{pmatrix}\textcolor{blue}{\begin{pmatrix}2\\-2\end{pmatrix}} & =\begin{pmatrix}1 \\-1\end{pmatrix}=0.5\textcolor{blue}{\begin{pmatrix}2\\-2\end{pmatrix}}\,.}
+						\end{align*}
+					\end{footnotesize}
+					
+					\column{0.33\textwidth}
+					%\centering
+					\begin{tikzpicture}[scale=0.5][>=latex']
+						\onslide<2->{
+							\draw [help lines] (-2.8,-2.8) grid (2.8,4.8);
+							\draw [<->] (3,0) -- (-3,0);
+							\draw [<->] (0,5) -- (0,-3);
+							\node [right] at (3,0) {$x_1$};
+							\node [above] at (0,5) {$x_2$};
+						}
+						
+						\onslide<3->{
+							\draw [-Latex, thick] (0,0) -- (2,4);
+							\node [below right] at (2,4) {$A\textcolor{red}{\vect{v}_1}$};
+							\draw [-Latex, red, thick] (0,0) -- (1,2);
+							\node [below right] at (1,2) {$\textcolor{red}{\vect{v}_1}$};
+						}
+						
+						\onslide<4->{
+							\draw [-Latex, blue, thick] (0,0) -- (2,-2);
+							\node [below right] at (2,-2) {$\textcolor{blue}{\vect{v}_2}$};
+							\draw [-Latex, thick] (0,0) -- (1,-1);
+							\node [above right] at (0.9,-1.1) {$A\textcolor{blue}{\vect{v}_2}$};
+						}
+						
+						\onslide<5->{
+							\draw [-Latex, orange, thick] (0,0) -- (-2,0);
+							\node [above left] at (-1.8,0) {$\textcolor{orange}{\vect{w}}$};
+							\draw [-Latex, thick] (0,0) -- (-2,-2);
+							\node [above left] at (-1.8,-2.1) {$A\textcolor{orange}{\vect{w}}$};
+						}
+					\end{tikzpicture}
+				\end{columns}
+			\end{example}
+		}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Eigenvalues}
+		\begin{itemize}
+			\onslide<1->{
+				\item What do eigenvalues and eigenvectors tell us about a matrix?
+				\begin{itemize}
+					\item Eigenvectors act as a sort of ``natural coordinate system.''
+					\item Eigenvalues indicate stability or instability in dynamical systems.
+					\item Eigenvalues can measure importance in data analysis.
+				\end{itemize}
+			}
+			
+			\onslide<2->{
+				\item How can we determine the eigenvalues and eigenvectors of a matrix?
+				\begin{itemize}
+					\item If $A\vect{v}=\lambda\vect{v}$, then $(A-\lambda I)\vect{v}=\vect{0}$.
+					\item Since $\vect{v}\neq\vect{0}$, we know $A-\lambda I$ is \emph{not} invertible.
+					\item We usually express this condition as: $\det(\lambda I-A)=0$.
+					\item Knowing $\lambda$, we can solve $(A-\lambda I)\vect{v}=\vect{0}$.
+				\end{itemize}
+			}
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}
+		\begin{example}
+			Consider the matrix from our previous example:
+			\begin{equation*}
+				A=\begin{pmatrix}1 & 0.5\\1 & 1.5\end{pmatrix}\implies\lambda I-A=\begin{pmatrix}\lambda-1 & -0.5\\-1 & \lambda-1.5\end{pmatrix}\,.
+			\end{equation*}
+			\begin{align*}
+				\det(\lambda I-A) & =(\lambda-1)(\lambda-1.5)-(-1)(-0.5)\\
+				& =\lambda^2-2.5\lambda+1\\
+				& =(\lambda-2)(\lambda-0.5)=0
+			\end{align*}
+		Therefore, the eigenvalues of $A$ are $\{0.5,2\}$.
+		\end{example}
+	\end{frame}
+	
+	\begin{frame}
+		\begin{example}
+			\begin{itemize}
+				\onslide<1->{
+					\item Find an eigenvector associated with $\lambda_1=2$:
+					\begin{equation*}
+						(\lambda_1I-A)\vect{v}=\begin{pmatrix}1 & -0.5\\-1 & 0.5\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix}=\begin{pmatrix}x-0.5y\\-x+0.5y\end{pmatrix}=\begin{pmatrix}0\\0\end{pmatrix}
+					\end{equation*}
+					Both equations imply $x=0.5y$, so $\vect{v}_1=(1,\;2)^\top$ is an eigenvector.
+				}
+			
+				\onslide<2->{
+					\item Find an eigenvector associated with $\lambda_2=0.5$:
+					\begin{equation*}
+						(\lambda_2I-A)\vect{v}=\begin{pmatrix}-0.5 & -0.5\\-1 & -1\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix}=\begin{pmatrix}-0.5x-0.5y\\-x-y\end{pmatrix}=\begin{pmatrix}0\\0\end{pmatrix}
+					\end{equation*}
+					Both equations imply $x=-y$, so $\vect{v}_2=(1,\;-1)^\top$ is an eigenvector.
+				}
+			\end{itemize}
+		\end{example}
+	\end{frame}
+	
+	\section{Differential Equations}
+	\begin{frame}
+		\frametitle{Types of Differential Equations}
+		\begin{definition}
+			The \textbf{order} of a differential equation $$F\left[x,\,y(x),\,\frac{dy}{dx},\,\cdots,\,\frac{d^ny}{dx^n}\right]=0$$ is the order of the highest derivative that appears in the expression for $F$.
+		\end{definition}
+		\begin{example}
+			\begin{align*}
+				& \frac{dC}{dt}=-kC &  \frac{d^2u}{dx^2}-x\,\frac{du}{dx}+u &=2\\
+				& \text{first-order} & \text{second-order} &
+			\end{align*}
+		\end{example}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Types of Differential Equations}
+		\begin{definition}
+			A first-order differential equation is called \textbf{separable} if it can be written in the following equivalent forms:
+			\begin{align*}
+				f(x)+g(y)\,\frac{dy}{dx} & =0\,,\\
+				g(y)\,dy & =-f(x)\,dx\,.
+			\end{align*}
+		\end{definition}
+		\begin{example}
+			\begin{align*}
+				\frac{dy}{dx} & =\frac{x^2}{1+y^2}\\
+				(1+y^2)\frac{dy}{dx} & =x^2\\
+				(1+y^2)\,dy & =x^2\,dx
+			\end{align*}
+		\end{example}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Types of Differential Equations}
+		\begin{definition}
+			An ordinary differential equation is called \textbf{linear} if it can be written as a linear combination of the function $y(x)$ and its derivatives: $$\sum_{k=0}^na_k(x)y^{(k)}(x)=f(x)\,.$$ Note that the coefficients $a_k(x)$ and ``source term'' $f(x)$ may depend on the independent variable $x$.
+		\end{definition}
+		\begin{example}
+			\begin{align*}
+				(x^2+1)\,\frac{d^2y}{dx^2}+y & =\sin(x) &  \left(\frac{dy}{dx}\right)^2+y\,\frac{d^2y}{dx^2} & =0\\
+				\text{linear} & & \text{non-linear} &
+			\end{align*}
+		\end{example}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Types of Differential Equations}
+		\begin{definition}
+			A linear differential equation is called \textbf{homogeneous} if it can be written as a linear combination of $y(x)$ and its derivatives with no source term: $$\mathcal{L}y:=\sum_{k=0}^na_k(x)y^{(k)}(x)=0\,.$$ Otherwise, the equation is called \textbf{inhomogeneous}.
+		\end{definition}
+		\onslide<2->{
+			\begin{block}{Parallels to Matrix Equations}
+				\begin{itemize}
+					\item A homogeneous ODE always has the trivial solution $y(x)\equiv0$.
+					\item If $y_p$ is one solution to the linear equation $\mathcal{L}y=f(x)$, then the set of all such solutions is $\{y_p+y_h\,|\,\mathcal{L}y_h=0\}$.
+				\end{itemize}
+			\end{block}
+		}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Integrating Factor}
+		\begin{itemize}
+			\item Suppose we want to solve the following equation: $$\frac{dy}{dx}+g(x)\,y(x)=f(x)\,.$$
+			\item If $v(x)=\int\!g(x)\,dx$, then we have
+			\begin{align*}
+				\frac{d}{dx}\left[e^{v(x)}\,y(x)\right] & =e^{v(x)}\,\frac{dy}{dx}+e^{v(x)}\,\frac{dv}{dx}\,y(x)\\
+				\onslide<2->{
+						& =e^{v(x)}\,\left[\frac{dy}{dx}+g(x)\,y(x)\right]\\
+					& =e^{v(x)}\,f(x)\,.
+				}
+			\end{align*}
+			\onslide<3->{
+				\item We can solve for $y(x)$ explicitly: $$y(x)=e^{-v(x)}\left(\int e^{v(x)}\,f(x)\,dx+C\right)\,.$$
+			}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Solving Differential Equations}
+		\begin{example}
+			\begin{equation*}
+				\frac{dy}{dx}+2\,y(x)=e^{-3x}\qquad y(0)=0
+			\end{equation*}
+			Our integrating factor is $e^{\int\!2\,dx}=e^{2x}$. Hence,
+			\begin{align*}
+				e^{2x}\left(\frac{dy}{dx}+2\,y(x)\right) & =e^{2x}e^{-3x}\\
+				\frac{d}{dx}\left[e^{2x}\,y(x)\right] & =e^{-x}\\
+				e^{2x}\,y(x) & =\int\!e^{-x}\,dx\\
+				e^{2x}\,y(x) & =-e^{-x}+C & y(0)=0\implies C=1\\
+				y(x) & =e^{-2x}(1-e^{-x})\\
+				y(x) & =e^{-2x}-e^{-3x}
+			\end{align*}
+		\end{example}
+	\end{frame}
+	
+	\section{Appendix}
+	\begin{frame}
+		\frametitle{Many Ways to Say a Matrix is Invertible}
+		\begin{theorem}
+			Let $A\in\R^{n\times n}$. The following are equivalent:
+			\begin{itemize}
+				\item $A$ is invertible: there exists $A^{-1}$ such that $AA^{-1}=A^{-1}A=I$.
+				\item $A$ has full rank: $\rk(A)=n$.
+				\item $A$ has a trivial null space: $\nulls(A)=\{\vect{0}\}$.
+				\item The rows of $A$ are linearly independent.
+				\item The columns of $A$ are linearly independent.
+				\item The columns of $A$ span $\R^n$.
+				\item The columns of $A$ form a basis for $\R^n$.
+				\item The equation $A\vect{x}=\vect{0}$ has only the trivial solution $\vect{x}=\vect{0}$.
+				\item For each $\vect{b}\in\R^n$, there is exactly one solution to $A\vect{x}=\vect{b}$.
+				\item None of the eigenvalues of $A$ is 0.
+				\item $\det(A)\neq0$.
+			\end{itemize}
+		\end{theorem}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Additional Resources}
+		\begin{block}{Textbook}
+			\begin{itemize}
+				\item Jim Hefferon has written an open-source Linear Algebra textbook that is \href{http://joshua.smcvt.edu/linearalgebra/book.pdf}{\alert{available}} for free online.
+				\item Ancillary materials can be found on the book's \href{https://hefferon.net/linearalgebra/}{\alert{webpage}}.
+			\end{itemize}
+		\end{block}
+		
+		\begin{block}{MATLAB Tutorial}
+			\begin{itemize}
+				\item The MathWorks company offers an interactive \href{https://www.mathworks.com/learn/tutorials/introduction-to-linear-algebra-with-matlab.html}{\alert{online course}} on the MATLAB functions used to solve systems and compute eigenvalues.
+				\item They also have courses for various \href{https://matlabacademy.mathworks.com/}{\alert{other topics}}.
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	\begin{frame}[fragile]
+		\frametitle{Symbolic Package for Differential Equations}
+		\begin{block}{MATLAB Can Solve ODEs Symbolically}
+			\begin{verbatim}
+>> syms y(t); % Define y as a symbolic function of t.
+>> equation = diff(y, t) + 2*y == exp(-3*t);
+>> dsolve(eqn) % Finds a general solution.
+ans(t) =
+         C1*exp(-2*t) - exp(-3*t)
+>> IC = y(0) == 0; % Specify initial condition.
+>> dsolve(eqn, IC) % Find particular solution.
+ans(t) =
+         exp(-3*t)*(exp(t) - 1)
+>> eqn2 = diff(y, t, 2) == cos(2*t) - y;
+>> dydt = diff(y, t);
+>> ICs = [y(0) == 1, dydt(0) == 0];
+>> soln = dsolve(eqn2, ICs);
+>> simplify(soln)
+     1 - (8*sin(x/2)^4)/3
+\end{verbatim}
+		\end{block}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Textbook Problem 2.9a}
+		\begin{block}{Problem Statement}
+			Consider the element balance matrix equation for a system of $s$ chemical species, comprised of $e$ elements: $\nu\mathcal{A}=\vect{0}$\only<1>{ or $$\begin{pmatrix}\nu_1 & \nu_2 & \cdots & \nu_s\end{pmatrix}\begin{pmatrix}a_{11} & a_{12} & \cdots & a_{1e}\\a_{21} & a_{22} & \cdots & a_{2e}\\\vdots & \vdots & \ddots & \vdots\\a_{s1} & a_{s2} & \cdots & a_{se}\end{pmatrix}=\begin{pmatrix}0 & 0 & \cdots & 0\end{pmatrix}\,.$$}\only<2->{.} Use the fundamental theorem of linear algebra to show that the number of linearly independent reactions that satisfy this equation is \only<1>{$$i=s-\rk(\mathcal{A})\,.$$}\only<2->{$i=s-\rk(\mathcal{A})$.}
+		\end{block}
+	
+		\begin{block}<2->{Solution}
+			\begin{itemize}
+				\item We can assume the stoichiometric matrix $\nu\in\R^{i\times s}$ contains a ``full set'' of $i$ linearly independent reactions.
+				\onslide<3->{
+					\item Transpose the balance equation: $\mathcal{A}^\top\nu^\top=\vect{0}$.
+					\item Apply FToLA to $\mathcal{A}^\top$: $\rk(\mathcal{A}^\top)+\dinn(\nulls(\mathcal{A}^\top))=s$.
+				}
+				\onslide<4->{
+					\item Each of the $i$ columns of $\nu^\top$ is in $\nulls(\mathcal{A}^\top)$, so $i=\dinn(\nulls(\mathcal{A}^\top))$.
+				}
+				\onslide<5->{
+				\item Since $\rk(\mathcal{A})=\rk(\mathcal{A}^\top)$, we obtain $s=i+\rk(\mathcal{A})$.
+			}
+			\end{itemize}
+		\end{block}
+	\end{frame}
+\end{document}
